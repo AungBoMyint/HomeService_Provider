@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "264664382023",
+    "project_id": "kzn-service",
+    "storage_bucket": "kzn-service.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264664382023:android:7f70c19e0eac54c9890f62",
+        "android_client_info": {
+          "package_name": "com.kzn.service"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264664382023-revndpo2fae4uo6vvgdjlann6ghl22v2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kzn.service",
+            "certificate_hash": "fd2fae5b1bd1ffb7fc0ee24bac6a5467967b116b"
+          }
+        },
+        {
+          "client_id": "264664382023-tfq6et7l5fm1a1ge0hdgonbpdhn1sj06.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzolrgF0QUlwCIPr7joONvD3iOD2vEBCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264664382023-assfs9ufsj85r4pa3v3thn35lg9hpk80.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "264664382023-ddng9hiou064e0106olq4a6igk4l1qr5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kzn.serviceprovider"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264664382023:android:f638c5373a2afe78890f62",
+        "android_client_info": {
+          "package_name": "com.kzn.serviceprovider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264664382023-tfq6et7l5fm1a1ge0hdgonbpdhn1sj06.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzolrgF0QUlwCIPr7joONvD3iOD2vEBCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264664382023-assfs9ufsj85r4pa3v3thn35lg9hpk80.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "264664382023-ddng9hiou064e0106olq4a6igk4l1qr5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kzn.serviceprovider"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
