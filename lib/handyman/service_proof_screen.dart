@@ -13,6 +13,7 @@ import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/constant.dart';
 import 'package:handyman_provider_flutter/utils/model_keys.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class ServiceProofScreen extends StatefulWidget {
@@ -32,6 +33,7 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
   TextEditingController compliantCont = TextEditingController();
 
   FocusNode compliantFocus = FocusNode();
+  FocusNode compliantFocus2 = FocusNode();
   FilePickerResult? filePickerResult;
 
   List<File> imageFiles = [];
@@ -48,11 +50,12 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
   }
 
   getMultipleFile() async {
-    filePickerResult = await FilePicker.platform.pickFiles(allowMultiple: true, type: FileType.custom, allowedExtensions: ['jpg', 'png', 'jpeg']);
+    final ImagePicker picker = ImagePicker();
+    List<XFile> filePickerResult = await picker.pickMultiImage();
 
-    if (filePickerResult != null) {
+    if (filePickerResult.isNotEmpty) {
       setState(() {
-        imageFiles = filePickerResult!.paths.map((path) => File(path!)).toList();
+        imageFiles = filePickerResult.map((path) => File(path.path)).toList();
       });
     } else {}
   }
@@ -60,25 +63,35 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
   Future<void> submit() async {
     hideKeyboard(context);
 
-    MultipartRequest multiPartRequest = await getMultiPartRequest('save-service-proof');
-    multiPartRequest.fields[CommonKeys.serviceId] = widget.bookingDetail!.service!.id.toString().validate();
-    multiPartRequest.fields[CommonKeys.bookingId] = widget.bookingDetail!.bookingDetail!.id.toString().validate();
-    multiPartRequest.fields[CommonKeys.userId] = getIntAsync(USER_ID).toString();
-    multiPartRequest.fields[SaveBookingAttachment.title] = titleCont.text.validate();
-    multiPartRequest.fields[SaveBookingAttachment.description] = compliantCont.text.validate();
+    MultipartRequest multiPartRequest =
+        await getMultiPartRequest('save-service-proof');
+    multiPartRequest.fields[CommonKeys.serviceId] =
+        widget.bookingDetail!.service!.id.toString().validate();
+    multiPartRequest.fields[CommonKeys.bookingId] =
+        widget.bookingDetail!.bookingDetail!.id.toString().validate();
+    multiPartRequest.fields[CommonKeys.userId] =
+        getIntAsync(USER_ID).toString();
+    multiPartRequest.fields[SaveBookingAttachment.title] =
+        titleCont.text.validate();
+    multiPartRequest.fields[SaveBookingAttachment.description] =
+        compliantCont.text.validate();
 
     if (imageFiles.isNotEmpty) {
       await Future.forEach<File>(imageFiles, (element) async {
         int i = imageFiles.indexOf(element);
         log('${SaveBookingAttachment.bookingAttachment + i.toString()}');
-        multiPartRequest.files.add(await MultipartFile.fromPath('${SaveBookingAttachment.bookingAttachment + i.toString()}', element.path));
+        multiPartRequest.files.add(await MultipartFile.fromPath(
+            '${SaveBookingAttachment.bookingAttachment + i.toString()}',
+            element.path));
       });
     }
     if (imageFiles.isEmpty) {
       return toast(languages!.lblChooseOneImage);
     }
 
-    if (imageFiles.isNotEmpty) multiPartRequest.fields[AddServiceKey.attachmentCount] = imageFiles.length.toString();
+    if (imageFiles.isNotEmpty)
+      multiPartRequest.fields[AddServiceKey.attachmentCount] =
+          imageFiles.length.toString();
 
     log('multiPartRequest.fields : ${multiPartRequest.fields}');
 
@@ -137,14 +150,21 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                     textFieldType: TextFieldType.NAME,
                     controller: titleCont,
                     nextFocus: compliantFocus,
-                    decoration: inputDecoration(context, hint: languages!.lblTitle),
+                    decoration:
+                        inputDecoration(context, hint: languages!.lblTitle),
                   ),
                   16.height,
-                  AppTextField(
-                    textFieldType: TextFieldType.MULTILINE,
+                  TextFormField(
                     controller: compliantCont,
+                    focusNode: compliantFocus2,
                     minLines: 5,
-                    decoration: inputDecoration(context, hint: languages!.hintDescription),
+                    maxLines: null,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () {
+                      compliantFocus2.unfocus();
+                    },
+                    decoration: inputDecoration(context,
+                        hint: languages!.hintDescription),
                   ),
                   16.height,
                   SizedBox(
@@ -157,13 +177,16 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(LineIcons.image, size: 30, color: context.iconColor),
+                          Icon(LineIcons.image,
+                              size: 30, color: context.iconColor),
                           8.height,
                           Text(languages!.lblAddImage, style: boldTextStyle()),
                         ],
                       ).center().onTap(() async {
                         getMultipleFile();
-                      }, highlightColor: Colors.transparent, splashColor: Colors.transparent),
+                      },
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent),
                     ),
                   ),
                   16.height,
@@ -174,9 +197,13 @@ class ServiceProofScreenState extends State<ServiceProofScreen> {
                         return Stack(
                           alignment: Alignment.topRight,
                           children: [
-                            Image.file(imageFiles[i], width: 90, height: 90, fit: BoxFit.cover).cornerRadiusWithClipRRect(defaultRadius),
+                            Image.file(imageFiles[i],
+                                    width: 90, height: 90, fit: BoxFit.cover)
+                                .cornerRadiusWithClipRRect(defaultRadius),
                             Container(
-                              decoration: boxDecorationWithRoundedCorners(boxShape: BoxShape.circle, backgroundColor: primaryColor),
+                              decoration: boxDecorationWithRoundedCorners(
+                                  boxShape: BoxShape.circle,
+                                  backgroundColor: primaryColor),
                               margin: EdgeInsets.only(right: 8, top: 8),
                               padding: EdgeInsets.all(4),
                               child: Icon(Icons.close, size: 16, color: white),
