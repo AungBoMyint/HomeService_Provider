@@ -1,7 +1,7 @@
 class Translations {
   static final languages = <String>[
-    'English',
     'Thai',
+    'English',
     'Burmese',
   ];
 
