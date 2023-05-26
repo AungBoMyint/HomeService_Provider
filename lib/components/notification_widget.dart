@@ -23,7 +23,7 @@ class NotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var activityM = "";
+    /* var activityM = "";
     final json = data.toJson();
     final activityMessage = data.data!.message!;
     if (activityMessage == "Booking status has been changed from  to .") {
@@ -40,7 +40,7 @@ class NotificationWidget extends StatelessWidget {
     } else {
       log("Activity Message: False");
       activityM = activityMessage;
-    }
+    } */
     return Container(
       width: context.width(),
       padding: EdgeInsets.all(8),
@@ -74,7 +74,7 @@ class NotificationWidget extends StatelessWidget {
                 ],
               ),
               4.height,
-              Text(activityM,
+              Text(data.data!.message!,
                   style: secondaryTextStyle(),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis),
