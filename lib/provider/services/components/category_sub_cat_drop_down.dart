@@ -14,7 +14,14 @@ class CategorySubCatDropDown extends StatefulWidget {
   final bool? isSubCategoryValidate;
   final Color? fillColor;
 
-  CategorySubCatDropDown({this.categoryId, this.subCategoryId, required this.onSubCategorySelect, required this.onCategorySelect, this.isSubCategoryValidate, this.isCategoryValidate,this.fillColor});
+  CategorySubCatDropDown(
+      {this.categoryId,
+      this.subCategoryId,
+      required this.onSubCategorySelect,
+      required this.onCategorySelect,
+      this.isSubCategoryValidate,
+      this.isCategoryValidate,
+      this.fillColor});
 
   @override
   State<CategorySubCatDropDown> createState() => _CategorySubCatDropDownState();
@@ -42,7 +49,8 @@ class _CategorySubCatDropDownState extends State<CategorySubCatDropDown> {
       subCategoryList = value.data.validate();
 
       if (widget.subCategoryId != null) {
-        selectedSubCategory = value.data!.firstWhere((element) => element.id == widget.subCategoryId);
+        selectedSubCategory = value.data!
+            .firstWhere((element) => element.id == widget.subCategoryId);
         widget.onSubCategorySelect.call(selectedSubCategory?.id.validate());
       }
 
@@ -61,7 +69,8 @@ class _CategorySubCatDropDownState extends State<CategorySubCatDropDown> {
       ///
       if (widget.categoryId != null) {
         ///
-        selectedCategory = value.data!.firstWhere((element) => element.id == widget.categoryId);
+        selectedCategory = value.data!
+            .firstWhere((element) => element.id == widget.categoryId);
         widget.onCategorySelect.call(selectedCategory?.id.validate());
 
         ///
@@ -96,7 +105,9 @@ class _CategorySubCatDropDownState extends State<CategorySubCatDropDown> {
       child: Column(
         children: [
           DropdownButtonFormField<CategoryData>(
-            decoration: inputDecoration(context, fillColor: widget.fillColor ?? context.scaffoldBackgroundColor, hint: languages!.hintSelectCategory),
+            decoration: inputDecoration(context,
+                fillColor: widget.fillColor ?? context.scaffoldBackgroundColor,
+                hint: languages!.hintSelectCategory),
             value: selectedCategory,
             dropdownColor: context.scaffoldBackgroundColor,
             items: categoryList.map((data) {
@@ -107,10 +118,10 @@ class _CategorySubCatDropDownState extends State<CategorySubCatDropDown> {
             }).toList(),
             validator: widget.isCategoryValidate.validate(value: true)
                 ? (value) {
-              if (value == null) return errorThisFieldRequired;
+                    if (value == null) return errorThisFieldRequired;
 
-              return null;
-            }
+                    return null;
+                  }
                 : null,
             onChanged: (CategoryData? value) async {
               selectedCategory = value!;
@@ -127,15 +138,17 @@ class _CategorySubCatDropDownState extends State<CategorySubCatDropDown> {
           ),
           16.height,
           DropdownButtonFormField<CategoryData>(
-            decoration: inputDecoration(context, fillColor: context.scaffoldBackgroundColor, hint: getStringValue()),
+            decoration: inputDecoration(context,
+                fillColor: context.scaffoldBackgroundColor,
+                hint: getStringValue()),
             value: selectedSubCategory,
             dropdownColor: context.scaffoldBackgroundColor,
             validator: widget.isSubCategoryValidate.validate(value: false)
                 ? (value) {
-              if (value == null) return errorThisFieldRequired;
+                    if (value == null) return errorThisFieldRequired;
 
-              return null;
-            }
+                    return null;
+                  }
                 : null,
             items: subCategoryList.map((data) {
               return DropdownMenuItem<CategoryData>(
@@ -145,7 +158,8 @@ class _CategorySubCatDropDownState extends State<CategorySubCatDropDown> {
             }).toList(),
             onChanged: (CategoryData? value) async {
               selectedSubCategory = value!;
-              widget.onSubCategorySelect.call(selectedSubCategory!.id.validate());
+              widget.onSubCategorySelect
+                  .call(selectedSubCategory!.id.validate());
               setState(() {});
             },
           ),

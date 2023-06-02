@@ -63,7 +63,8 @@ void main() async {
 
   if (!isDesktop) {
     Firebase.initializeApp().then((value) {
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+      FlutterError.onError =
+          FirebaseCrashlytics.instance.recordFlutterFatalError;
 
       setupFirebaseRemoteConfig();
     }).catchError((e) {
@@ -77,7 +78,8 @@ void main() async {
 
   localeLanguageList = languageList();
 
-  appStore.setLanguage(getStringAsync(SELECTED_LANGUAGE_CODE, defaultValue: DEFAULT_LANGUAGE));
+  appStore.setLanguage(
+      getStringAsync(SELECTED_LANGUAGE_CODE, defaultValue: DEFAULT_LANGUAGE));
 
   await appStore.setLoggedIn(getBoolAsync(IS_LOGGED_IN));
 
@@ -99,9 +101,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   void init() async {
-    OneSignal.shared.setNotificationOpenedHandler((OSNotificationOpenedResult notification) {
+    OneSignal.shared.setNotificationOpenedHandler(
+        (OSNotificationOpenedResult notification) {
       try {
-        var notId = notification.notification.additionalData!.containsKey('id') ? notification.notification.additionalData!['id'] : 0;
+        var notId = notification.notification.additionalData!.containsKey('id')
+            ? notification.notification.additionalData!['id']
+            : 0;
         push(BookingDetailScreen(bookingId: notId.toString().toInt()));
       } catch (e) {
         throw errorSomethingWentWrong;

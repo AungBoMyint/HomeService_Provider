@@ -22,7 +22,11 @@ class SelectServiceScreen extends StatefulWidget {
   final bool isUpdate;
   final PackageData? packageData;
 
-  SelectServiceScreen({this.categoryId, this.subCategoryId, this.isUpdate = false, this.packageData});
+  SelectServiceScreen(
+      {this.categoryId,
+      this.subCategoryId,
+      this.isUpdate = false,
+      this.packageData});
 
   @override
   _SelectServiceScreenState createState() => _SelectServiceScreenState();
@@ -59,7 +63,10 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
       categoryId = widget.categoryId == null ? -1 : widget.categoryId;
       subCategoryId = widget.subCategoryId == null ? -1 : widget.subCategoryId;
       if (widget.packageData != null) {
-        isPackageTypeSingle = widget.packageData!.packageType.validate() == PACKAGE_TYPE_SINGLE ? true : false;
+        isPackageTypeSingle =
+            widget.packageData!.packageType.validate() == PACKAGE_TYPE_SINGLE
+                ? true
+                : false;
       }
     } else {
       appStore.selectedServiceList.clear();
@@ -70,9 +77,18 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
   }
 
   //region Get Services List
-  Future<void> fetchAllServices({String? searchText = "", int? categoryId = -1, int? subCategoryId = -1}) async {
+  Future<void> fetchAllServices(
+      {String? searchText = "",
+      int? categoryId = -1,
+      int? subCategoryId = -1}) async {
     appStore.setLoading(true);
-    await getServicesList(page, search: searchText, categoryId: categoryId, subCategoryId: subCategoryId, providerId: appStore.userId, type: SERVICE_TYPE_FIXED).then((value) {
+    await getServicesList(page,
+            search: searchText,
+            categoryId: categoryId,
+            subCategoryId: subCategoryId,
+            providerId: appStore.userId,
+            type: SERVICE_TYPE_FIXED)
+        .then((value) {
       isApiCalled = true;
 
       if (page == 1) serviceList.clear();
@@ -111,10 +127,13 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
 
     await getCategoryList(perPage: CATEGORY_TYPE_ALL).then((value) async {
       categoryList = value.data.validate();
-      if (widget.isUpdate && categoryId != -1) selectedCategory = value.data!.firstWhere((element) => element.id == widget.categoryId);
+      if (widget.isUpdate && categoryId != -1)
+        selectedCategory = value.data!
+            .firstWhere((element) => element.id == widget.categoryId);
 
       if (selectedCategory != null) {
-        selectedCategory = value.data!.firstWhere((element) => element.id == widget.categoryId);
+        selectedCategory = value.data!
+            .firstWhere((element) => element.id == widget.categoryId);
         categoryId = selectedCategory!.id.validate();
 
         if (categoryId != -1) {
@@ -143,19 +162,27 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
 
       if (widget.isUpdate) {
         if (subCategoryId != -1) {
-          selectedSubCategory = value.data!.firstWhere((element) => element.id == subCategoryId);
+          selectedSubCategory =
+              value.data!.firstWhere((element) => element.id == subCategoryId);
         }
       } else {
         selectedSubCategory = subCategoryList.first;
       }
 
       if (subCategoryId != -1) {
-        selectedSubCategory = value.data!.firstWhere((element) => element.id == subCategoryId);
-        await fetchAllServices(categoryId: categoryId.validate(), subCategoryId: selectedSubCategory!.id.validate(), searchText: '');
+        selectedSubCategory =
+            value.data!.firstWhere((element) => element.id == subCategoryId);
+        await fetchAllServices(
+            categoryId: categoryId.validate(),
+            subCategoryId: selectedSubCategory!.id.validate(),
+            searchText: '');
       } else {
         selectedSubCategory = subCategoryList.first;
         subCategoryId = selectedSubCategory!.id.validate();
-        await fetchAllServices(categoryId: categoryId.validate(), subCategoryId: subCategoryId, searchText: '');
+        await fetchAllServices(
+            categoryId: categoryId.validate(),
+            subCategoryId: subCategoryId,
+            searchText: '');
       }
 
       setState(() {});
@@ -199,9 +226,12 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${languages!.categoryBasedPackage} ${appStore.isCategoryWisePackageService ? languages!.enabled : languages!.disabled}', style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                        Text(
+                            '${languages!.categoryBasedPackage} ${appStore.isCategoryWisePackageService ? languages!.enabled : languages!.disabled}',
+                            style: boldTextStyle(size: LABEL_TEXT_SIZE)),
                         4.height,
-                        Text(languages!.subTitleOfSelectService, style: secondaryTextStyle()),
+                        Text(languages!.subTitleOfSelectService,
+                            style: secondaryTextStyle()),
                       ],
                     ).expand(),
                     Switch(
@@ -213,7 +243,8 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                           context,
                           dialogType: DialogType.CONFIRMATION,
                           primaryColor: context.primaryColor,
-                          title: '${languages!.doYouWantTo} ${!appStore.isCategoryWisePackageService ? languages!.enable : languages!.disable} ${languages!.categoryBasedPackage}?',
+                          title:
+                              '${languages!.doYouWantTo} ${!appStore.isCategoryWisePackageService ? languages!.enable : languages!.disable} ${languages!.categoryBasedPackage}?',
                           positiveText: context.translate.lblYes,
                           negativeText: context.translate.lblNo,
                           onAccept: (p0) {
@@ -234,7 +265,8 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                               serviceList.clear();
                             }
                             isPackageTypeSingle = v;
-                            appStore.setCategoryBasedPackageService(isPackageTypeSingle.validate());
+                            appStore.setCategoryBasedPackageService(
+                                isPackageTypeSingle.validate());
                             setState(() {});
                           },
                         );
@@ -248,13 +280,16 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                   Column(
                     children: [
                       DropdownButtonFormField<CategoryData>(
-                        decoration: inputDecoration(context, fillColor: context.cardColor, hint: languages!.hintSelectCategory),
+                        decoration: inputDecoration(context,
+                            fillColor: context.cardColor,
+                            hint: languages!.hintSelectCategory),
                         value: selectedCategory,
                         dropdownColor: context.cardColor,
                         items: categoryList.map((data) {
                           return DropdownMenuItem<CategoryData>(
                             value: data,
-                            child: Text(data.name.validate(), style: primaryTextStyle()),
+                            child: Text(data.name.validate(),
+                                style: primaryTextStyle()),
                           );
                         }).toList(),
                         onChanged: (CategoryData? value) async {
@@ -272,13 +307,16 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                       ),
                       16.height,
                       DropdownButtonFormField<CategoryData>(
-                        decoration: inputDecoration(context, fillColor: context.cardColor, hint: languages!.lblSelectSubCategory),
+                        decoration: inputDecoration(context,
+                            fillColor: context.cardColor,
+                            hint: languages!.lblSelectSubCategory),
                         value: selectedSubCategory,
                         dropdownColor: context.cardColor,
                         items: subCategoryList.map((data) {
                           return DropdownMenuItem<CategoryData>(
                             value: data,
-                            child: Text(data.name.validate(), style: primaryTextStyle()),
+                            child: Text(data.name.validate(),
+                                style: primaryTextStyle()),
                           );
                         }).toList(),
                         onChanged: (CategoryData? value) async {
@@ -287,7 +325,10 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
 
                           if (selectedSubCategory != null) {
                             appStore.setLoading(true);
-                            fetchAllServices(categoryId: categoryId.validate(), subCategoryId: subCategoryId, searchText: '');
+                            fetchAllServices(
+                                categoryId: categoryId.validate(),
+                                subCategoryId: subCategoryId,
+                                searchText: '');
                           }
                         },
                       ),
@@ -299,7 +340,8 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                   AppTextField(
                     controller: searchCont,
                     textFieldType: TextFieldType.NAME,
-                    decoration: inputDecoration(context, hint: languages!.lblSearchHere),
+                    decoration: inputDecoration(context,
+                        hint: languages!.lblSearchHere),
                     onFieldSubmitted: (s) {
                       appStore.setLoading(true);
 
@@ -312,12 +354,16 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     16.height,
-                    Text(languages!.includedInThisPackage, style: boldTextStyle(size: LABEL_TEXT_SIZE)).paddingSymmetric(horizontal: 16),
+                    Text(languages!.includedInThisPackage,
+                            style: boldTextStyle(size: LABEL_TEXT_SIZE))
+                        .paddingSymmetric(horizontal: 16),
                     16.height,
-                    if (!appStore.isLoading && appStore.selectedServiceList.isNotEmpty)
+                    if (!appStore.isLoading &&
+                        appStore.selectedServiceList.isNotEmpty)
                       SelectedServiceComponent(
                         onItemRemove: (data) {
-                          int index = serviceList.indexOf(serviceList.firstWhere((element) => element.id == data.id));
+                          int index = serviceList.indexOf(serviceList
+                              .firstWhere((element) => element.id == data.id));
                           serviceList[index].isSelected = false;
                           setState(() {});
                         },
@@ -327,8 +373,12 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                         height: 120,
                         width: context.width(),
                         margin: EdgeInsets.symmetric(horizontal: 16),
-                        decoration: boxDecorationRoundedWithShadow(defaultRadius.toInt(), backgroundColor: context.cardColor),
-                        child: Text(languages!.packageServicesWillAppearHere, style: secondaryTextStyle()).center(),
+                        decoration: boxDecorationRoundedWithShadow(
+                            defaultRadius.toInt(),
+                            backgroundColor: context.cardColor),
+                        child: Text(languages!.packageServicesWillAppearHere,
+                                style: secondaryTextStyle())
+                            .center(),
                       ),
                     16.height,
                   ],
@@ -340,16 +390,20 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(languages!.lblServices, style: boldTextStyle(size: LABEL_TEXT_SIZE)),
-                    Text(languages!.showingFixPriceServices, style: secondaryTextStyle()),
+                    Text(languages!.lblServices,
+                        style: boldTextStyle(size: LABEL_TEXT_SIZE)),
+                    Text(languages!.showingFixPriceServices,
+                        style: secondaryTextStyle()),
                     8.height,
                   ],
                 ).paddingSymmetric(horizontal: 16),
-                if ((!appStore.isLoading && serviceList.isNotEmpty) && (categoryId != -1 || !isPackageTypeSingle.validate()))
+                if ((!appStore.isLoading && serviceList.isNotEmpty) &&
+                    (categoryId != -1 || !isPackageTypeSingle.validate()))
                   AnimatedListView(
                     itemCount: serviceList.length,
                     shrinkWrap: true,
-                    padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 70),
+                    padding:
+                        EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 70),
                     disposeScrollController: false,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (_, i) {
@@ -360,24 +414,38 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                         width: context.width(),
                         margin: EdgeInsets.all(8),
                         padding: EdgeInsets.all(8),
-                        decoration: boxDecorationRoundedWithShadow(defaultRadius.toInt(), backgroundColor: context.cardColor),
+                        decoration: boxDecorationRoundedWithShadow(
+                            defaultRadius.toInt(),
+                            backgroundColor: context.cardColor),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
                                 CachedImageWidget(
-                                  url: data.imageAttachments!.isNotEmpty ? data.imageAttachments!.first.validate() : "",
+                                  url: data.imageAttachments!.isNotEmpty
+                                      ? data.imageAttachments!.first.validate()
+                                      : "",
                                   height: 50,
                                   fit: BoxFit.cover,
                                   radius: defaultRadius,
                                 ),
                                 16.width,
-                                Text(data.name.validate(), style: secondaryTextStyle(color: context.iconColor)).expand(),
+                                Text(data.name.validate(),
+                                        style: secondaryTextStyle(
+                                            color: context.iconColor))
+                                    .expand(),
                               ],
                             ).expand(),
                             16.width,
-                            Icon(isSelected ? Icons.check_circle : Icons.radio_button_unchecked, size: 28, color: isSelected ? primaryColor : context.iconColor),
+                            Icon(
+                                isSelected
+                                    ? Icons.check_circle
+                                    : Icons.radio_button_unchecked,
+                                size: 28,
+                                color: isSelected
+                                    ? primaryColor
+                                    : context.iconColor),
                             8.width,
                           ],
                         ).onTap(
@@ -420,12 +488,15 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
                     title: languages!.pleaseSelectTheCategory,
                     imageSize: Size(150, 150),
                     subTitle: "",
-                  ).center().visible(!appStore.isLoading && categoryId == -1 && isPackageTypeSingle.validate());
+                  ).center().visible(!appStore.isLoading &&
+                      categoryId == -1 &&
+                      isPackageTypeSingle.validate());
                 }),
               ],
             ),
           ),
-          Observer(builder: (context) => LoaderWidget().visible(appStore.isLoading)),
+          Observer(
+              builder: (context) => LoaderWidget().visible(appStore.isLoading)),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -434,7 +505,9 @@ class _SelectServiceScreenState extends State<SelectServiceScreen> {
           Map res = {
             "categoryId": categoryId,
             "subCategoryId": subCategoryId,
-            "packageType": isPackageTypeSingle! ? PACKAGE_TYPE_SINGLE : PACKAGE_TYPE_MULTIPLE,
+            "packageType": isPackageTypeSingle!
+                ? PACKAGE_TYPE_SINGLE
+                : PACKAGE_TYPE_MULTIPLE,
           };
           finish(context, res);
         },

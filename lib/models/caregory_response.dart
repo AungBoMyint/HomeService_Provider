@@ -7,7 +7,9 @@ class CategoryResponse {
   CategoryResponse({this.pagination, this.data});
 
   CategoryResponse.fromJson(Map<String, dynamic> json) {
-    pagination = json['pagination'] != null ? new Pagination.fromJson(json['pagination']) : null;
+    pagination = json['pagination'] != null
+        ? new Pagination.fromJson(json['pagination'])
+        : null;
     if (json['data'] != null) {
       data = [];
       json['data'].forEach((v) {
@@ -41,7 +43,18 @@ class CategoryData {
   String? categoryName;
   int? services;
 
-  CategoryData({this.id, this.name, this.status, this.description, this.isFeatured, this.color, this.categoryImage, this.categoryId, this.categoryExtension, this.categoryName, this.services});
+  CategoryData(
+      {this.id,
+      this.name,
+      this.status,
+      this.description,
+      this.isFeatured,
+      this.color,
+      this.categoryImage,
+      this.categoryId,
+      this.categoryExtension,
+      this.categoryName,
+      this.services});
 
   //CategoryData({this.id, this.name, this.status, this.description, this.isFeatured, this.color, this.categoryImage});
 

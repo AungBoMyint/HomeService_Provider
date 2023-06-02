@@ -115,7 +115,7 @@ class ServiceData {
     name = json['name'];
     providerImage = json['provider_image'];
     categoryId = json['category_id'];
-    subCategoryId = json['subcategory_id'];
+    subCategoryId = int.tryParse(json['subcategory_id'] ?? "") ?? -1;
     providerId = json['provider_id'];
     price = json['price'];
     priceFormat = json['price_format'];
@@ -130,9 +130,17 @@ class ServiceData {
     cityId = json['city_id'];
     categoryName = json['category_name'];
     //image_attchments = json['attchments'];
-    imageAttachments = json['attchments'] != null ? List<String>.from(json['attchments']) : null;
-    attchments = json['attchments_array'] != null ? (json['attchments_array'] as List).map((i) => Attachments.fromJson(i)).toList() : null;
-    providerSlotData = json['slots'] != null ? (json['slots'] as List).map((i) => SlotData.fromJson(i)).toList() : null;
+    imageAttachments = json['attchments'] != null
+        ? List<String>.from(json['attchments'])
+        : null;
+    attchments = json['attchments_array'] != null
+        ? (json['attchments_array'] as List)
+            .map((i) => Attachments.fromJson(i))
+            .toList()
+        : null;
+    providerSlotData = json['slots'] != null
+        ? (json['slots'] as List).map((i) => SlotData.fromJson(i)).toList()
+        : null;
     subCategoryName = json['subcategory_name'];
 
     totalReview = json['total_review'];
@@ -145,11 +153,15 @@ class ServiceData {
         serviceAddressMapping!.add(new ServiceAddressMapping.fromJson(v));
       });
     }
-    servicePackage = json['servicePackage'] != null ? (json['servicePackage'] as List).map((i) => PackageData.fromJson(i)).toList() : null;
+    servicePackage = json['servicePackage'] != null
+        ? (json['servicePackage'] as List)
+            .map((i) => PackageData.fromJson(i))
+            .toList()
+        : null;
     advancePaymentSetting = json[AdvancePaymentKey.advancePaymentSetting];
     isEnableAdvancePayment = json[AdvancePaymentKey.isEnableAdvancePayment];
     advancePaymentAmount = json[AdvancePaymentKey.advancePaymentAmount];
-    advancePaymentPercentage= json[AdvancePaymentKey.advancePaymentAmount];
+    advancePaymentPercentage = json[AdvancePaymentKey.advancePaymentAmount];
   }
 
   Map<String, dynamic> toJson() {
@@ -181,21 +193,26 @@ class ServiceData {
       data['slots'] = this.providerSlotData;
     }
     if (this.servicePackage != null) {
-      data['servicePackage'] = this.servicePackage!.map((v) => v.toJson()).toList();
+      data['servicePackage'] =
+          this.servicePackage!.map((v) => v.toJson()).toList();
     }
     data['total_review'] = this.totalReview;
     data['total_rating'] = this.totalRating;
     data['is_favourite'] = this.isFavourite;
     if (this.serviceAddressMapping != null) {
-      data['service_address_mapping'] = this.serviceAddressMapping!.map((v) => v.toJson()).toList();
+      data['service_address_mapping'] =
+          this.serviceAddressMapping!.map((v) => v.toJson()).toList();
     }
     if (this.attchments != null) {
-      data['attchments_array'] = this.attchments!.map((v) => v.toJson()).toList();
+      data['attchments_array'] =
+          this.attchments!.map((v) => v.toJson()).toList();
     }
     data[AdvancePaymentKey.advancePaymentSetting] = this.advancePaymentSetting;
-    data[AdvancePaymentKey.isEnableAdvancePayment] = this.isEnableAdvancePayment;
+    data[AdvancePaymentKey.isEnableAdvancePayment] =
+        this.isEnableAdvancePayment;
     data[AdvancePaymentKey.advancePaymentAmount] = this.advancePaymentAmount;
-    data[AdvancePaymentKey.advancePaymentAmount] = this.advancePaymentPercentage;
+    data[AdvancePaymentKey.advancePaymentAmount] =
+        this.advancePaymentPercentage;
     return data;
   }
 }

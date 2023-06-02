@@ -71,21 +71,38 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
 
     if (isUpdate) {
       appStore.selectedServiceList.clear();
-      appStore.addAllSelectedPackageService(widget.data!.serviceList.validate());
+      appStore
+          .addAllSelectedPackageService(widget.data!.serviceList.validate());
 
       tempAttachments = widget.data!.attchments.validate();
-      imageFiles = widget.data!.attchments.validate().map((e) => File(e.url.toString())).toList();
+      imageFiles = widget.data!.attchments
+          .validate()
+          .map((e) => File(e.url.toString()))
+          .toList();
       packageNameCont.text = widget.data!.name.validate();
       packageDescriptionCont.text = widget.data!.description.validate();
       packagePriceCont.text = widget.data!.price.toString().validate();
-      startDateCont.text = widget.data!.startDate != null ? formatDate(widget.data!.startDate.validate(), format: DATE_FORMAT_7).toString() : "";
-      endDateCont.text = widget.data!.endDate != null ? formatDate(widget.data!.endDate.validate(), format: DATE_FORMAT_7).toString() : "";
+      startDateCont.text = widget.data!.startDate != null
+          ? formatDate(widget.data!.startDate.validate(), format: DATE_FORMAT_7)
+              .toString()
+          : "";
+      endDateCont.text = widget.data!.endDate != null
+          ? formatDate(widget.data!.endDate.validate(), format: DATE_FORMAT_7)
+              .toString()
+          : "";
       isFeature = widget.data!.isFeatured == 1 ? true : false;
       packageStatus = widget.data!.status.validate() == 1 ? ACTIVE : INACTIVE;
-      selectedCategoryId = widget.data!.categoryId != null ? widget.data!.categoryId : selectedCategoryId;
-      selectedSubCategoryId = widget.data!.subCategoryId != null ? widget.data!.subCategoryId : selectedSubCategoryId;
+      selectedCategoryId = widget.data!.categoryId != null
+          ? widget.data!.categoryId
+          : selectedCategoryId;
+      selectedSubCategoryId = widget.data!.subCategoryId != null
+          ? widget.data!.subCategoryId
+          : selectedSubCategoryId;
 
-      isPackageTypeSingleCategory = widget.data!.packageType.validate() == PACKAGE_TYPE_SINGLE ? PACKAGE_TYPE_SINGLE : PACKAGE_TYPE_MULTIPLE;
+      isPackageTypeSingleCategory =
+          widget.data!.packageType.validate() == PACKAGE_TYPE_SINGLE
+              ? PACKAGE_TYPE_SINGLE
+              : PACKAGE_TYPE_MULTIPLE;
     } else {
       appStore.selectedServiceList.clear();
       packageStatus = statusList.first;
@@ -95,7 +112,8 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
   }
 
   // region Select Start Date and End Date
-  void selectDateAndTime(BuildContext context, TextEditingController textEditingController, DateTime? abc) async {
+  void selectDateAndTime(BuildContext context,
+      TextEditingController textEditingController, DateTime? abc) async {
     await showDatePicker(
       context: context,
       initialDate: abc ?? currentDateTime,
@@ -113,7 +131,8 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
         finalDate = DateTime(date.year, date.month, date.day);
 
         selectedDate = date;
-        textEditingController.text = "${formatDate(selectedDate.toString(), format: DATE_FORMAT_7)}";
+        textEditingController.text =
+            "${formatDate(selectedDate.toString(), format: DATE_FORMAT_7)}";
         setState(() {});
       }
     });
@@ -171,7 +190,9 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                   textFieldType: TextFieldType.NAME,
                   nextFocus: packageDescriptionFocus,
                   errorThisFieldRequired: context.translate.hintRequired,
-                  decoration: inputDecoration(context, hint: languages!.packageName, fillColor: context.scaffoldBackgroundColor),
+                  decoration: inputDecoration(context,
+                      hint: languages!.packageName,
+                      fillColor: context.scaffoldBackgroundColor),
                 ),
                 24.height,
                 Observer(builder: (context) {
@@ -179,30 +200,43 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                     width: context.width(),
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-                    decoration: boxDecorationWithRoundedCorners(backgroundColor: context.scaffoldBackgroundColor),
+                    decoration: boxDecorationWithRoundedCorners(
+                        backgroundColor: context.scaffoldBackgroundColor),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(languages!.selectService, style: secondaryTextStyle()).paddingSymmetric(horizontal: 16, vertical: 12),
+                            Text(languages!.selectService,
+                                    style: secondaryTextStyle())
+                                .paddingSymmetric(horizontal: 16, vertical: 12),
                             TextButton(
-                              child: Text(appStore.selectedServiceList.isNotEmpty ? context.translate.lblEdit : languages!.addService, style: boldTextStyle()),
+                              child: Text(
+                                  appStore.selectedServiceList.isNotEmpty
+                                      ? context.translate.lblEdit
+                                      : languages!.addService,
+                                  style: boldTextStyle()),
                               onPressed: () async {
                                 Map? res = await SelectServiceScreen(
-                                        categoryId: selectedCategoryId, subCategoryId: selectedSubCategoryId, isUpdate: widget.data != null ? true : false, packageData: widget.data)
+                                        categoryId: selectedCategoryId,
+                                        subCategoryId: selectedSubCategoryId,
+                                        isUpdate:
+                                            widget.data != null ? true : false,
+                                        packageData: widget.data)
                                     .launch(context);
 
                                 if (res != null && res["categoryId"] != null) {
                                   selectedCategoryId = res["categoryId"];
 
                                   if (res["subCategoryId"] != null) {
-                                    selectedSubCategoryId = res["subCategoryId"];
+                                    selectedSubCategoryId =
+                                        res["subCategoryId"];
                                   }
 
                                   if (res["packageType"] != null) {
-                                    isPackageTypeSingleCategory = res["packageType"];
+                                    isPackageTypeSingleCategory =
+                                        res["packageType"];
                                   }
                                 }
                                 setState(() {});
@@ -210,7 +244,8 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                             ),
                           ],
                         ),
-                        if (appStore.selectedServiceList.isNotEmpty) SelectedServiceComponent()
+                        if (appStore.selectedServiceList.isNotEmpty)
+                          SelectedServiceComponent()
                       ],
                     ),
                   );
@@ -224,7 +259,9 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                   minLines: 3,
                   maxLines: 5,
                   errorThisFieldRequired: context.translate.hintRequired,
-                  decoration: inputDecoration(context, hint: languages!.packageDescription, fillColor: context.scaffoldBackgroundColor),
+                  decoration: inputDecoration(context,
+                      hint: languages!.packageDescription,
+                      fillColor: context.scaffoldBackgroundColor),
                   validator: (value) {
                     if (value!.isEmpty) return context.translate.hintRequired;
                     return null;
@@ -241,14 +278,20 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                         context,
                         hint: languages!.packagePrice,
                         fillColor: context.scaffoldBackgroundColor,
-                        prefix: Text(appStore.currencySymbol, style: primaryTextStyle(size: 18), textAlign: TextAlign.center),
+                        prefix: Text(appStore.currencySymbol,
+                            style: primaryTextStyle(size: 18),
+                            textAlign: TextAlign.center),
                       ),
                     ).expand(),
                     16.width,
                     DropdownButtonFormField<String>(
                       dropdownColor: context.scaffoldBackgroundColor,
                       value: packageStatus.isNotEmpty ? packageStatus : null,
-                      items: statusList.map((String data) => DropdownMenuItem<String>(value: data, child: Text(data, style: primaryTextStyle()))).toList(),
+                      items: statusList
+                          .map((String data) => DropdownMenuItem<String>(
+                              value: data,
+                              child: Text(data, style: primaryTextStyle())))
+                          .toList(),
                       decoration: inputDecoration(
                         context,
                         fillColor: context.scaffoldBackgroundColor,
@@ -275,11 +318,14 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                       controller: startDateCont,
                       textFieldType: TextFieldType.OTHER,
                       focus: startDateFocus,
-                      decoration: inputDecoration(context, hint: languages!.startDate, fillColor: context.scaffoldBackgroundColor),
+                      decoration: inputDecoration(context,
+                          hint: languages!.startDate,
+                          fillColor: context.scaffoldBackgroundColor),
                       isValidationRequired: false,
                       onTap: () {
                         hideKeyboard(context);
-                        selectDateAndTime(context, startDateCont, currentDateTime);
+                        selectDateAndTime(
+                            context, startDateCont, currentDateTime);
                         endDateCont.text = "";
                         setState(() {});
                       },
@@ -289,7 +335,9 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                       controller: endDateCont,
                       textFieldType: TextFieldType.OTHER,
                       focus: endDateFocus,
-                      decoration: inputDecoration(context, hint: languages!.endDate, fillColor: context.scaffoldBackgroundColor),
+                      decoration: inputDecoration(context,
+                          hint: languages!.endDate,
+                          fillColor: context.scaffoldBackgroundColor),
                       isValidationRequired: false,
                       onTap: () {
                         hideKeyboard(context);
@@ -300,13 +348,20 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                 ),
                 24.height,
                 Container(
-                  decoration: boxDecorationDefault(color: context.scaffoldBackgroundColor, borderRadius: radius()),
+                  decoration: boxDecorationDefault(
+                      color: context.scaffoldBackgroundColor,
+                      borderRadius: radius()),
                   child: CheckboxListTile(
                     value: isFeature,
                     contentPadding: EdgeInsets.zero,
-                    checkboxShape: RoundedRectangleBorder(side: BorderSide(color: context.primaryColor), borderRadius: radius(4)),
-                    shape: RoundedRectangleBorder(borderRadius: radius(), side: BorderSide(color: context.primaryColor)),
-                    title: Text(languages!.hintSetAsFeature, style: secondaryTextStyle()),
+                    checkboxShape: RoundedRectangleBorder(
+                        side: BorderSide(color: context.primaryColor),
+                        borderRadius: radius(4)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: radius(),
+                        side: BorderSide(color: context.primaryColor)),
+                    title: Text(languages!.hintSetAsFeature,
+                        style: secondaryTextStyle()),
                     onChanged: (bool? v) {
                       isFeature = v.validate();
                       setState(() {});
@@ -344,7 +399,8 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
         }
       }
 
-      if (startDateCont.text.validate().isNotEmpty && endDateCont.text.validate().isEmpty) {
+      if (startDateCont.text.validate().isNotEmpty &&
+          endDateCont.text.validate().isEmpty) {
         return toast(languages!.pleaseEnterTheEndDate);
       }
 
@@ -374,14 +430,20 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
         PackageKey.startDate: startDateCont.text.validate(),
         PackageKey.endDate: endDateCont.text.validate(),
         if (selectedCategoryId != -1) PackageKey.categoryId: selectedCategoryId,
-        if (selectedSubCategoryId != -1) PackageKey.subCategoryId: selectedSubCategoryId,
+        if (selectedSubCategoryId != -1)
+          PackageKey.subCategoryId: selectedSubCategoryId,
         PackageKey.isFeatured: isFeature ? '1' : '0',
         PackageKey.status: packageStatus.validate() == ACTIVE ? '1' : '0',
         PackageKey.serviceId: serviceId,
         PackageKey.packageType: isPackageTypeSingleCategory,
       };
 
-      addPackageMultiPart(value: req, imageFile: imageFiles.where((element) => !element.path.contains('http')).toList()).then((value) {
+      addPackageMultiPart(
+              value: req,
+              imageFile: imageFiles
+                  .where((element) => !element.path.contains('http'))
+                  .toList())
+          .then((value) {
         //
       }).catchError((e) {
         toast(e.toString());
@@ -414,15 +476,22 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                 CustomImagePicker(
                   key: uniqueKey,
                   onRemoveClick: (value) {
-                    if (tempAttachments.validate().isNotEmpty && imageFiles.isNotEmpty) {
+                    if (tempAttachments.validate().isNotEmpty &&
+                        imageFiles.isNotEmpty) {
                       showConfirmDialogCustom(
                         context,
                         dialogType: DialogType.DELETE,
                         positiveText: languages!.lblDelete,
                         negativeText: languages!.lblCancel,
                         onAccept: (p0) {
-                          removeAttachment(id: tempAttachments.validate().firstWhere((element) => element.url == value).id.validate());
-                          imageFiles.removeWhere((element) => element.path == value);
+                          removeAttachment(
+                              id: tempAttachments
+                                  .validate()
+                                  .firstWhere((element) => element.url == value)
+                                  .id
+                                  .validate());
+                          imageFiles
+                              .removeWhere((element) => element.path == value);
                         },
                       );
                     } else {
@@ -432,7 +501,8 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                         positiveText: languages!.lblDelete,
                         negativeText: languages!.lblCancel,
                         onAccept: (p0) {
-                          imageFiles.removeWhere((element) => element.path == value);
+                          imageFiles
+                              .removeWhere((element) => element.path == value);
                           if (isUpdate) {
                             uniqueKey = UniqueKey();
                           }
@@ -441,7 +511,12 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
                       );
                     }
                   },
-                  selectedImages: widget.data != null ? imageFiles.validate().map((e) => e.path.validate()).toList() : null,
+                  selectedImages: widget.data != null
+                      ? imageFiles
+                          .validate()
+                          .map((e) => e.path.validate())
+                          .toList()
+                      : null,
                   onFileSelected: (List<File> files) async {
                     imageFiles = files;
                     setState(() {});
@@ -469,7 +544,9 @@ class _AddPackageScreenState extends State<AddPackageScreen> {
               },
             ),
           ),
-          Observer(builder: (_) => LoaderWidget().center().visible(appStore.isLoading)),
+          Observer(
+              builder: (_) =>
+                  LoaderWidget().center().visible(appStore.isLoading)),
         ],
       ),
     );

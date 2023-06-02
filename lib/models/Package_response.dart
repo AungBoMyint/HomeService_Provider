@@ -9,7 +9,9 @@ class PackageResponse {
   PackageResponse(this.pagination, this.packageList);
 
   PackageResponse.fromJson(Map<String, dynamic> json) {
-    pagination = json['pagination'] != null ? new Pagination.fromJson(json['pagination']) : null;
+    pagination = json['pagination'] != null
+        ? new Pagination.fromJson(json['pagination'])
+        : null;
     if (json['data'] != null) {
       packageList = [];
       json['data'].forEach((v) {
@@ -77,9 +79,19 @@ class PackageData {
     endDate = json['end_date'];
     status = json['status'];
     packageType = json['package_type'];
-    serviceList =  json['services'] != null ? (json['services'] as List).map((i) => ServiceData.fromJson(i)).toList() : null;
-    attchments = json['attchments_array'] != null ? (json['attchments_array'] as List).map((i) => Attachments.fromJson(i)).toList() : null;
-    imageAttachments = json['attchments'] != null ? List<String>.from(json['attchments']) : null;
+    serviceList = json['services'] != null
+        ? (json['services'] as List)
+            .map((i) => ServiceData.fromJson(i))
+            .toList()
+        : null;
+    attchments = json['attchments_array'] != null
+        ? (json['attchments_array'] as List)
+            .map((i) => Attachments.fromJson(i))
+            .toList()
+        : null;
+    imageAttachments = json['attchments'] != null
+        ? List<String>.from(json['attchments'])
+        : null;
     categoryId = json['category_id'];
     subCategoryId = json['subcategory_id'];
     isFeatured = json['is_featured'];
@@ -106,7 +118,8 @@ class PackageData {
     data['subcategory_id'] = this.subCategoryId;
     data['is_featured'] = this.isFeatured;
     if (this.attchments != null) {
-      data['attchments_array'] = this.attchments!.map((v) => v.toJson()).toList();
+      data['attchments_array'] =
+          this.attchments!.map((v) => v.toJson()).toList();
     }
     if (this.imageAttachments != null) {
       data['attchments'] = this.imageAttachments;

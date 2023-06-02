@@ -59,12 +59,17 @@ class _AddServicesState extends State<AddServices> {
   bool isFeature = false;
   bool isTimeSlotAvailable = false;
   bool isAdvancePayment = false;
-  bool isAdvancePaymentAllowedBySystem = getBoolAsync(IS_ADVANCE_PAYMENT_ALLOWED);
+  bool isAdvancePaymentAllowedBySystem =
+      getBoolAsync(IS_ADVANCE_PAYMENT_ALLOWED);
 
   List<File> imageFiles = [];
   List<Attachments> tempAttachments = [];
 
-  List<String> typeList = [SERVICE_TYPE_FREE, SERVICE_TYPE_FIXED, SERVICE_TYPE_HOURLY];
+  List<String> typeList = [
+    SERVICE_TYPE_FREE,
+    SERVICE_TYPE_FIXED,
+    SERVICE_TYPE_HOURLY
+  ];
   List<String> statusList = [ACTIVE, INACTIVE];
 
   List<int> serviceAddressList = [];
@@ -80,7 +85,10 @@ class _AddServicesState extends State<AddServices> {
 
     if (isUpdate) {
       tempAttachments = widget.data!.attchments.validate();
-      imageFiles = widget.data!.attchments.validate().map((e) => File(e.url.toString())).toList();
+      imageFiles = widget.data!.attchments
+          .validate()
+          .map((e) => File(e.url.toString()))
+          .toList();
       serviceNameCont.text = widget.data!.name.validate();
       priceCont.text = widget.data!.price.toString().validate();
       discountCont.text = widget.data!.discount.toString().validate();
@@ -96,9 +104,11 @@ class _AddServicesState extends State<AddServices> {
       //isAdvancePaymentAllowedBySystem = widget.data!.isAdvancePaymentSetting;
       isAdvancePayment = widget.data!.isAdvancePayment;
       if (widget.data!.advancePaymentAmount != null) {
-        prePayAmountController.text = widget.data!.advancePaymentAmount.validate().toString();
+        prePayAmountController.text =
+            widget.data!.advancePaymentAmount.validate().toString();
       }
-      timeSlotStore.initializeSlots(value: widget.data!.providerSlotData.validate());
+      timeSlotStore.initializeSlots(
+          value: widget.data!.providerSlotData.validate());
     }
 
     setState(() {});
@@ -112,7 +122,8 @@ class _AddServicesState extends State<AddServices> {
       hideKeyboard(context);
 
       if (!isUpdate) {
-        if (serviceAddressList.validate().isEmpty || imageFiles.validate().isEmpty) {
+        if (serviceAddressList.validate().isEmpty ||
+            imageFiles.validate().isEmpty) {
           if (serviceAddressList.validate().isEmpty) {
             return toast(languages!.pleaseSelectServiceAddresses);
           }
@@ -131,7 +142,9 @@ class _AddServicesState extends State<AddServices> {
         AddServiceKey.isFeatured: isFeature ? '1' : '0',
         AddServiceKey.isSlot: isTimeSlotAvailable ? '1' : '0',
         AddServiceKey.status: serviceStatus.validate() == ACTIVE ? '1' : '0',
-        AddServiceKey.duration: durationContHr.text.toString().validate() + ':' + durationContMin.text.toString().validate(),
+        AddServiceKey.duration: durationContHr.text.toString().validate() +
+            ':' +
+            durationContMin.text.toString().validate(),
       };
 
       if (subCategoryId != -1) {
@@ -142,11 +155,19 @@ class _AddServicesState extends State<AddServices> {
         req.putIfAbsent(AddServiceKey.id, () => widget.data!.id.validate());
       }
       if (isAdvancePaymentAllowedBySystem && isAdvancePayment) {
-        req.putIfAbsent(AdvancePaymentKey.isEnableAdvancePayment, () => isAdvancePayment ? 1 : 0);
-        req.putIfAbsent(AdvancePaymentKey.advancePaymentAmount, () => prePayAmountController.text.validate().toDouble());
+        req.putIfAbsent(AdvancePaymentKey.isEnableAdvancePayment,
+            () => isAdvancePayment ? 1 : 0);
+        req.putIfAbsent(AdvancePaymentKey.advancePaymentAmount,
+            () => prePayAmountController.text.validate().toDouble());
       }
 
-      addServiceMultiPart(value: req, serviceAddressList: serviceAddressList, imageFile: imageFiles.where((element) => !element.path.contains('http')).toList()).then((value) {
+      addServiceMultiPart(
+              value: req,
+              serviceAddressList: serviceAddressList,
+              imageFile: imageFiles
+                  .where((element) => !element.path.contains('http'))
+                  .toList())
+          .then((value) {
         //
       }).catchError((e) {
         toast(e.toString());
@@ -201,7 +222,9 @@ class _AddServicesState extends State<AddServices> {
               focus: serviceNameFocus,
               nextFocus: priceFocus,
               errorThisFieldRequired: languages!.hintRequired,
-              decoration: inputDecoration(context, hint: languages!.hintServiceName, fillColor: context.scaffoldBackgroundColor),
+              decoration: inputDecoration(context,
+                  hint: languages!.hintServiceName,
+                  fillColor: context.scaffoldBackgroundColor),
             ),
             16.height,
             CategorySubCatDropDown(
@@ -220,7 +243,12 @@ class _AddServicesState extends State<AddServices> {
               },
             ),
             ServiceAddressComponent(
-              selectedList: widget.data != null ? widget.data!.serviceAddressMapping.validate().map((e) => e.providerAddressMapping!.id.validate()).toList() : null,
+              selectedList: widget.data != null
+                  ? widget.data!.serviceAddressMapping
+                      .validate()
+                      .map((e) => e.providerAddressMapping!.id.validate())
+                      .toList()
+                  : null,
               onSelectedList: (val) {
                 serviceAddressList = val;
               },
@@ -228,14 +256,17 @@ class _AddServicesState extends State<AddServices> {
             Row(
               children: [
                 DropdownButtonFormField<String>(
-                  decoration: inputDecoration(context, fillColor: context.scaffoldBackgroundColor, hint: languages!.lblType),
+                  decoration: inputDecoration(context,
+                      fillColor: context.scaffoldBackgroundColor,
+                      hint: languages!.lblType),
                   isExpanded: true,
                   value: serviceType.isNotEmpty ? serviceType : null,
                   dropdownColor: context.cardColor,
                   items: typeList.map((String data) {
                     return DropdownMenuItem<String>(
                       value: data,
-                      child: Text(data.capitalizeFirstLetter(), style: primaryTextStyle()),
+                      child: Text(data.capitalizeFirstLetter(),
+                          style: primaryTextStyle()),
                     );
                   }).toList(),
                   validator: (value) {
@@ -250,7 +281,8 @@ class _AddServicesState extends State<AddServices> {
                       discountCont.text = '0';
                     } else if (widget.data != null) {
                       priceCont.text = widget.data!.price.validate().toString();
-                      discountCont.text = widget.data!.discount.validate().toString();
+                      discountCont.text =
+                          widget.data!.discount.validate().toString();
                     } else {
                       priceCont.text = '';
                       discountCont.text = '';
@@ -263,8 +295,14 @@ class _AddServicesState extends State<AddServices> {
                   isExpanded: true,
                   dropdownColor: context.cardColor,
                   value: serviceStatus.isNotEmpty ? serviceStatus : null,
-                  items: statusList.map((String data) => DropdownMenuItem<String>(value: data, child: Text(data, style: primaryTextStyle()))).toList(),
-                  decoration: inputDecoration(context, fillColor: context.scaffoldBackgroundColor, hint: languages!.lblStatus),
+                  items: statusList
+                      .map((String data) => DropdownMenuItem<String>(
+                          value: data,
+                          child: Text(data, style: primaryTextStyle())))
+                      .toList(),
+                  decoration: inputDecoration(context,
+                      fillColor: context.scaffoldBackgroundColor,
+                      hint: languages!.lblStatus),
                   onChanged: (String? value) async {
                     serviceStatus = value.validate();
                     setState(() {});
@@ -370,13 +408,20 @@ class _AddServicesState extends State<AddServices> {
               ),
             ),
             Container(
-              decoration: boxDecorationDefault(color: context.scaffoldBackgroundColor, borderRadius: radius()),
+              decoration: boxDecorationDefault(
+                  color: context.scaffoldBackgroundColor,
+                  borderRadius: radius()),
               child: CheckboxListTile(
                 value: isFeature,
                 contentPadding: EdgeInsets.zero,
-                checkboxShape: RoundedRectangleBorder(side: BorderSide(color: primaryColor), borderRadius: radius(4)),
-                shape: RoundedRectangleBorder(borderRadius: radius(), side: BorderSide(color: primaryColor)),
-                title: Text(languages!.hintSetAsFeature, style: secondaryTextStyle()),
+                checkboxShape: RoundedRectangleBorder(
+                    side: BorderSide(color: primaryColor),
+                    borderRadius: radius(4)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: radius(),
+                    side: BorderSide(color: primaryColor)),
+                title: Text(languages!.hintSetAsFeature,
+                    style: secondaryTextStyle()),
                 onChanged: (bool? v) {
                   isFeature = v.validate();
                   setState(() {});
@@ -384,7 +429,9 @@ class _AddServicesState extends State<AddServices> {
               ).paddingSymmetric(horizontal: 16),
             ),
             Container(
-              decoration: boxDecorationDefault(color: context.scaffoldBackgroundColor, borderRadius: radius()),
+              decoration: boxDecorationDefault(
+                  color: context.scaffoldBackgroundColor,
+                  borderRadius: radius()),
               child: SettingItemWidget(
                 title: languages!.timeSlotAvailable,
                 subTitle: languages!.doesThisServicesContainsTimeslot,
@@ -403,7 +450,9 @@ class _AddServicesState extends State<AddServices> {
                         setState(() {});
                       } else {
                         toast(languages!.pleaseEnterTheDefaultTimeslotsFirst);
-                        MyTimeSlotsScreen(isFromService: true).launch(context).then((value) {
+                        MyTimeSlotsScreen(isFromService: true)
+                            .launch(context)
+                            .then((value) {
                           if (value != null) {
                             if (value) {
                               isTimeSlotAvailable = v;
@@ -416,13 +465,17 @@ class _AddServicesState extends State<AddServices> {
                         });
                       }
                     },
-                  ).visible(!timeSlotStore.isLoading, defaultWidget: LoaderWidget(size: 26));
+                  ).visible(!timeSlotStore.isLoading,
+                      defaultWidget: LoaderWidget(size: 26));
                 }),
               ),
             ),
-            if (isAdvancePaymentAllowedBySystem && serviceType == SERVICE_TYPE_FIXED)
+            if (isAdvancePaymentAllowedBySystem &&
+                serviceType == SERVICE_TYPE_FIXED)
               Container(
-                decoration: boxDecorationDefault(color: context.scaffoldBackgroundColor, borderRadius: radius()),
+                decoration: boxDecorationDefault(
+                    color: context.scaffoldBackgroundColor,
+                    borderRadius: radius()),
                 child: SettingItemWidget(
                   title: languages!.enablePrePayment,
                   subTitle: languages!.enablePrePaymentMessage,
@@ -457,7 +510,8 @@ class _AddServicesState extends State<AddServices> {
                 validator: (s) {
                   if (s!.isEmpty) return errorThisFieldRequired;
 
-                  if (s.toInt() <= 0 || s.toInt() >= 100) return languages!.valueConditionMessage;
+                  if (s.toInt() <= 0 || s.toInt() >= 100)
+                    return languages!.valueConditionMessage;
                   return null;
                 },
               ),
@@ -493,15 +547,22 @@ class _AddServicesState extends State<AddServices> {
                 CustomImagePicker(
                   key: uniqueKey,
                   onRemoveClick: (value) {
-                    if (tempAttachments.validate().isNotEmpty && imageFiles.isNotEmpty) {
+                    if (tempAttachments.validate().isNotEmpty &&
+                        imageFiles.isNotEmpty) {
                       showConfirmDialogCustom(
                         context,
                         dialogType: DialogType.DELETE,
                         positiveText: languages!.lblDelete,
                         negativeText: languages!.lblCancel,
                         onAccept: (p0) {
-                          imageFiles.removeWhere((element) => element.path == value);
-                          removeAttachment(id: tempAttachments.validate().firstWhere((element) => element.url == value).id.validate());
+                          imageFiles
+                              .removeWhere((element) => element.path == value);
+                          removeAttachment(
+                              id: tempAttachments
+                                  .validate()
+                                  .firstWhere((element) => element.url == value)
+                                  .id
+                                  .validate());
                         },
                       );
                     } else {
@@ -511,7 +572,8 @@ class _AddServicesState extends State<AddServices> {
                         positiveText: languages!.lblDelete,
                         negativeText: languages!.lblCancel,
                         onAccept: (p0) {
-                          imageFiles.removeWhere((element) => element.path == value);
+                          imageFiles
+                              .removeWhere((element) => element.path == value);
                           if (isUpdate) {
                             uniqueKey = UniqueKey();
                           }
@@ -520,7 +582,12 @@ class _AddServicesState extends State<AddServices> {
                       );
                     }
                   },
-                  selectedImages: widget.data != null ? imageFiles.validate().map((e) => e.path.validate()).toList() : null,
+                  selectedImages: widget.data != null
+                      ? imageFiles
+                          .validate()
+                          .map((e) => e.path.validate())
+                          .toList()
+                      : null,
                   onFileSelected: (List<File> files) async {
                     imageFiles = files;
                     setState(() {});
@@ -547,7 +614,9 @@ class _AddServicesState extends State<AddServices> {
               },
             ),
           ),
-          Observer(builder: (_) => LoaderWidget().center().visible(appStore.isLoading)),
+          Observer(
+              builder: (_) =>
+                  LoaderWidget().center().visible(appStore.isLoading)),
         ],
       ),
     );
