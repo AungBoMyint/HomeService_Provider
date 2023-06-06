@@ -202,7 +202,22 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
     };
 
     await bookingUpdate(request).then((res) async {
-      //
+      //-----------Push Noti To User About Booking-----------.
+      //get user
+      userService
+          .getUserByEmailOrPhone(
+        email: bookDetail.customer?.email,
+        phone: bookDetail.customer?.contactNumber,
+      )
+          .then((user) async {
+        notificationService.sendPushToUser(
+          updatedStatus,
+          bookDetail.bookingDetail?.serviceName ?? "",
+          receiverPlayerID: user.playerId ?? "",
+          data: {"id": widget.bookingId.validate()},
+        ).catchError((v) => log("---------Push Noti Error: $v"));
+      });
+      //------------------//
       LiveStream().emit(LIVESTREAM_UPDATE_BOOKINGS);
     }).catchError((e) {
       toast(e.toString(), print: true);
@@ -563,6 +578,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
   }
 
   Widget handleProvider({required BookingDetailResponse res}) {
+    log("==============Provider Booking Detail Response: ${res.customer?.toJson()}");
     if (res.bookingDetail!.status == BookingStatusKeys.pending) {
       showBottomActionBar = true;
       return Row(
@@ -578,6 +594,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
                   return BookingSummaryDialog(
                     bookingDataList: res.bookingDetail,
                     bookingId: res.bookingDetail!.id.validate(),
+                    customer: res.customer,
                   );
                 },
                 shape: RoundedRectangleBorder(borderRadius: radius()),
@@ -800,7 +817,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
     if (res.hasError) {
       return Text(res.error.toString()).center();
     } else if (res.hasData) {
-      log("Book detail response customer data: ${res.data!.customer}");
+      log("Book detail response customer data: ${res.data!.customer?.toJson()}");
       countDownKey = GlobalKey();
       return Stack(
         children: [

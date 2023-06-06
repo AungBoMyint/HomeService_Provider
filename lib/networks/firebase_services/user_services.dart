@@ -40,6 +40,23 @@ class UserService extends BaseService {
     return ref!.doc(id).update(data as Map<String, Object?>);
   }
 
+  Future<UserData> getUserByEmailOrPhone({String? email, String? phone}) {
+    log("*****Getting User from Email: $email******");
+    final Object field = email == null ? "contact_number" : "email";
+    final Object? isEqualTo = email == null ? phone : email;
+    return ref!.where(field, isEqualTo: isEqualTo).limit(1).get().then((value) {
+      if (value.docs.length == 1) {
+        final user =
+            UserData.fromJson(value.docs.first.data() as Map<String, dynamic>);
+        log("********Found User: ${user.toJson()}");
+        return user;
+      } else {
+        log("**********User Not Found*****");
+        throw '${languages!.lblNoUserFound}';
+      }
+    });
+  }
+
   Future<UserData> getUser({String? email}) {
     log("*****Getting User from Email: $email******");
     return ref!.where("email", isEqualTo: email).limit(1).get().then((value) {
