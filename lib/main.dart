@@ -85,6 +85,14 @@ void main() async {
 
   await setLoginValues();
 
+  /*  //-----FOR ONE SIGNAL
+  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+  //TODO:To put APP id to separate file in Producation Mode
+  OneSignal.shared.setAppId("349daeb0-f597-44f6-bc01-45001cf0642a");
+  //for notification permission request
+  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+    log("--Accepted notificaiton permission: $accepted");
+  }); */
   runApp(MyApp());
 }
 
@@ -101,6 +109,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   void init() async {
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent event) {
+      // Will be called whenever a notification is received in foreground
+      // Display Notification, pass null param for not displaying the notification
+      log("--------------------Notificaiton Receive: ${event.notification}------------");
+      event.complete(event.notification);
+    });
     OneSignal.shared.setNotificationOpenedHandler(
         (OSNotificationOpenedResult notification) {
       try {

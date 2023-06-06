@@ -9,7 +9,8 @@ import 'package:nb_utils/nb_utils.dart';
 import '../../utils/constant.dart';
 
 class NotificationService {
-  Future<void> sendPushNotifications(String title, String content, {String? id, String? image, String? receiverPlayerId}) async {
+  Future<void> sendPushNotifications(String title, String content,
+      {String? id, String? image, String? receiverPlayerId}) async {
     Map req = {
       'headings': {
         'en': title,
@@ -25,12 +26,14 @@ class NotificationService {
       },*/
 
       'app_id': getStringAsync(ONESIGNAL_APP_ID_PROVIDER),
-      'android_channel_id': getStringAsync(ONESIGNAL_CHANNEL_KEY_PROVIDER, defaultValue: ONESIGNAL_CHANNEL_ID),
+      'android_channel_id': getStringAsync(ONESIGNAL_CHANNEL_KEY_PROVIDER,
+          defaultValue: ONESIGNAL_CHANNEL_ID),
       'include_player_ids': [receiverPlayerId],
       'android_group': APP_NAME,
     };
     var header = {
-      HttpHeaders.authorizationHeader: 'Basic ${getStringAsync(ONESIGNAL_REST_API_KEY_PROVIDER, defaultValue: ONESIGNAL_REST_KEY)}',
+      HttpHeaders.authorizationHeader:
+          'Basic ${getStringAsync(ONESIGNAL_REST_API_KEY_PROVIDER, defaultValue: ONESIGNAL_REST_KEY)}',
       HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
     };
 
