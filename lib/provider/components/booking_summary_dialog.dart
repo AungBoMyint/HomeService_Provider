@@ -47,11 +47,12 @@ class _BookingSummaryDialogState extends State<BookingSummaryDialog> {
           .getUserByEmailOrPhone(
         email: widget.customer?.email,
         phone: widget.customer?.contactNumber,
+        displayName: widget.customer?.displayName,
       )
           .then((user) async {
         await notificationService.sendPushToUser(
-          "Accepted",
-          widget.bookingDataList?.serviceName ?? "",
+          "${widget.bookingDataList?.serviceName ?? ""} Booking Confirmed.",
+          "You can contact your Service Provider via Home Care Service App.",
           receiverPlayerID: user.playerId ?? "",
           data: {"id": widget.bookingId.validate()},
         ).catchError((v) => log("---------Push Noti Error: $v"));

@@ -40,10 +40,20 @@ class UserService extends BaseService {
     return ref!.doc(id).update(data as Map<String, Object?>);
   }
 
-  Future<UserData> getUserByEmailOrPhone({String? email, String? phone}) {
+  Future<UserData> getUserByEmailOrPhone(
+      {String? email, String? phone, String? displayName}) {
     log("*****Getting User from Email: $email******");
-    final Object field = email == null ? "contact_number" : "email";
-    final Object? isEqualTo = email == null ? phone : email;
+
+    final Object field = !(email == null)
+        ? "email"
+        : !(phone == null)
+            ? "contact_number"
+            : "display_name";
+    final Object? isEqualTo = !(email == null)
+        ? email
+        : !(phone == null)
+            ? phone
+            : displayName;
     return ref!.where(field, isEqualTo: isEqualTo).limit(1).get().then((value) {
       if (value.docs.length == 1) {
         final user =

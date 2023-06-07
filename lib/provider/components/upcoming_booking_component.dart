@@ -31,7 +31,11 @@ class UpcomingBookingComponent extends StatelessWidget {
         AnimatedListView(
           itemCount: bookingData.length,
           shrinkWrap: true,
-          itemBuilder: (_, i) => BookingItemComponent(bookingData: bookingData[i], showDescription: false),
+          itemBuilder: (_, i) => BookingItemComponent(
+            bookingData: bookingData[i],
+            showDescription: false,
+            userName: "",
+          ),
         ),
       ],
     ).paddingSymmetric(horizontal: 16);

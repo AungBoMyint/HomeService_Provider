@@ -22,7 +22,8 @@ class BookingFragment extends StatefulWidget {
   BookingFragmentState createState() => BookingFragmentState();
 }
 
-class BookingFragmentState extends State<BookingFragment> with SingleTickerProviderStateMixin {
+class BookingFragmentState extends State<BookingFragment>
+    with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
 
   int page = 1;
@@ -72,7 +73,8 @@ class BookingFragmentState extends State<BookingFragment> with SingleTickerProvi
   }
 
   Future<void> fetchAllBookingList({bool loading = true}) async {
-    future = getBookingList(page, status: selectedValue, bookings: bookings, lastPageCallback: (b) {
+    future = getBookingList(page, status: selectedValue, bookings: bookings,
+        lastPageCallback: (b) {
       isLastPage = b;
     });
     isBookingTypeChanged = false;
@@ -132,8 +134,13 @@ class BookingFragmentState extends State<BookingFragment> with SingleTickerProvi
                 itemCount: bookings.length,
                 shrinkWrap: true,
                 physics: AlwaysScrollableScrollPhysics(),
-                slideConfiguration: SlideConfiguration(verticalOffset: 400, delay: 50.milliseconds),
-                itemBuilder: (_, index) => BookingItemComponent(bookingData: bookings[index], index: index),
+                slideConfiguration: SlideConfiguration(
+                    verticalOffset: 400, delay: 50.milliseconds),
+                itemBuilder: (_, index) => BookingItemComponent(
+                  bookingData: bookings[index],
+                  index: index,
+                  userName: bookings[index].customerName ?? "",
+                ),
                 //disposeScrollController: false,
                 onNextPage: () {
                   if (!isLastPage) {
@@ -156,7 +163,8 @@ class BookingFragmentState extends State<BookingFragment> with SingleTickerProvi
                 page = 1;
 
                 if (bookings.isNotEmpty) {
-                  scrollController.animateTo(0, duration: 1.seconds, curve: Curves.easeOutQuart);
+                  scrollController.animateTo(0,
+                      duration: 1.seconds, curve: Curves.easeOutQuart);
                 } else {
                   scrollController = ScrollController();
                 }
@@ -170,7 +178,11 @@ class BookingFragmentState extends State<BookingFragment> with SingleTickerProvi
             bottom: isBookingTypeChanged ? 100 : 8,
             left: 0,
             right: 0,
-            child: Observer(builder: (_) => LoaderWidget().visible(appStore.isLoading && (page != 1 || isBookingTypeChanged)).center()),
+            child: Observer(
+                builder: (_) => LoaderWidget()
+                    .visible(appStore.isLoading &&
+                        (page != 1 || isBookingTypeChanged))
+                    .center()),
           ),
         ],
       ),

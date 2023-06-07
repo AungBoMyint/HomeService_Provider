@@ -116,6 +116,7 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
   Future<void> updateBooking(BookingDetailResponse bookDetail,
       String updateReason, String updatedStatus) async {
     DateTime now = DateTime.now();
+
     if (updatedStatus == BookingStatusKeys.inProgress) {
       startDateTime = DateFormat(BOOKING_SAVE_FORMAT).format(now);
       endDateTime = bookDetail.bookingDetail!.endAt.validate();
@@ -202,22 +203,6 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
     };
 
     await bookingUpdate(request).then((res) async {
-      //-----------Push Noti To User About Booking-----------.
-      //get user
-      userService
-          .getUserByEmailOrPhone(
-        email: bookDetail.customer?.email,
-        phone: bookDetail.customer?.contactNumber,
-      )
-          .then((user) async {
-        notificationService.sendPushToUser(
-          updatedStatus,
-          bookDetail.bookingDetail?.serviceName ?? "",
-          receiverPlayerID: user.playerId ?? "",
-          data: {"id": widget.bookingId.validate()},
-        ).catchError((v) => log("---------Push Noti Error: $v"));
-      });
-      //------------------//
       LiveStream().emit(LIVESTREAM_UPDATE_BOOKINGS);
     }).catchError((e) {
       toast(e.toString(), print: true);
@@ -258,7 +243,23 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
     }
 
     await bookingUpdate(req).then((res) async {
-      //
+      //Push Complete Message
+      //-----------Push Noti To User About Booking-----------.
+      //get user
+      userService
+          .getUserByEmailOrPhone(
+        email: val.customer?.email,
+        phone: val.customer?.contactNumber,
+      )
+          .then((user) async {
+        notificationService.sendPushToUser(
+          "${val.bookingDetail?.serviceName ?? ""} is done.",
+          "Please make a payment to your service provider. Thanks for using our service. See you again.",
+          receiverPlayerID: user.playerId ?? "",
+          data: {"id": widget.bookingId.validate()},
+        ).catchError((v) => log("---------Push Noti Error: $v"));
+      });
+      //------------------//
       LiveStream().emit(LIVESTREAM_UPDATE_BOOKINGS);
     }).catchError((e) {
       toast(e.toString(), print: true);
@@ -578,7 +579,6 @@ class BookingDetailScreenState extends State<BookingDetailScreen> {
   }
 
   Widget handleProvider({required BookingDetailResponse res}) {
-    log("==============Provider Booking Detail Response: ${res.customer?.toJson()}");
     if (res.bookingDetail!.status == BookingStatusKeys.pending) {
       showBottomActionBar = true;
       return Row(
