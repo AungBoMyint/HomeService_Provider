@@ -30,6 +30,4 @@ const SADAD_PAY_URL = "https://d.sadad.qa";
 
 /// You can now update OneSignal Keys from Admin Panel in Setting.
 /// These keys will be used if you haven't added in Admin Panel.
-const ONESIGNAL_APP_ID = '349daeb0-f597-44f6-bc01-45001cf0642a';
-const ONESIGNAL_REST_KEY = "NDU2NGZlZTgtZGU0Ni00MzUwLWFmMGYtMWMxOTJhYzkwNDQy";
-const ONESIGNAL_CHANNEL_ID = "4d8ac17b-9045-40a0-8223-705ae76cbf10";
+const LOCAL_NOTIFICATION_KEY = "local_notification_key";

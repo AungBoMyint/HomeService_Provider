@@ -345,9 +345,9 @@ Future<DashboardResponse> providerDashboard() async {
       }
     }
   });
-  1.seconds.delay.then((value) {
+  /* 1.seconds.delay.then((value) {
     setOneSignal();
-  });
+  }); */
 
   if (data.subscription != null) {
     await setSaveSubscription(
@@ -453,9 +453,9 @@ Future<HandymanDashBoardResponse> handymanDashboard() async {
       }
     }
   });
-  1.seconds.delay.then((value) {
+  /* 1.seconds.delay.then((value) {
     setOneSignal();
-  });
+  }); */
 
   if (data.termConditions != null) {
     if (data.termConditions!.value.validate().isNotEmpty) {

@@ -9,6 +9,8 @@ import 'package:handyman_provider_flutter/utils/configs.dart';
 import 'package:handyman_provider_flutter/utils/images.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../utils/constant.dart';
+
 class SplashScreen extends StatefulWidget {
   @override
   SplashScreenState createState() => SplashScreenState();
@@ -24,8 +26,14 @@ class SplashScreenState extends State<SplashScreen> {
 
   Future<void> init() async {
     afterBuildCreated(() async {
-      appStore.setLanguage(getStringAsync(SELECTED_LANGUAGE_CODE, defaultValue: DEFAULT_LANGUAGE), context: context);
-      setStatusBarColor(Colors.transparent, statusBarBrightness: Brightness.dark, statusBarIconBrightness: appStore.isDarkMode ? Brightness.light : Brightness.dark);
+      appStore.setLanguage(
+          getStringAsync(SELECTED_LANGUAGE_CODE,
+              defaultValue: DEFAULT_LANGUAGE),
+          context: context);
+      setStatusBarColor(Colors.transparent,
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness:
+              appStore.isDarkMode ? Brightness.light : Brightness.dark);
 
       if (isAndroid || isIOS) {
         getPackageName().then((value) {
@@ -39,17 +47,24 @@ class SplashScreenState extends State<SplashScreen> {
     if (!await isAndroid12Above()) await 500.milliseconds.delay;
 
     if (remoteConfigDataModel.inMaintenanceMode.validate()) {
-      MaintenanceModeScreen().launch(context, pageRouteAnimation: PageRouteAnimation.Fade);
+      MaintenanceModeScreen()
+          .launch(context, pageRouteAnimation: PageRouteAnimation.Fade);
     } else {
       if (!appStore.isLoggedIn) {
         SignInScreen().launch(context, isNewTask: true);
       } else {
+        //If user is already login
+        firebaseMessagingService.listenToken(getStringAsync(USER_EMAIL));
+        //TODO:Set UP Notification
+        firebaseMessagingService.setUpFullNotification();
         if (isUserTypeProvider) {
           setStatusBarColor(primaryColor);
-          ProviderDashboardScreen(index: 0).launch(context, isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
+          ProviderDashboardScreen(index: 0).launch(context,
+              isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
         } else if (isUserTypeHandyman) {
           setStatusBarColor(primaryColor);
-          HandymanDashboardScreen(index: 0).launch(context, isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
+          HandymanDashboardScreen(index: 0).launch(context,
+              isNewTask: true, pageRouteAnimation: PageRouteAnimation.Fade);
         } else {
           SignInScreen().launch(context, isNewTask: true);
         }

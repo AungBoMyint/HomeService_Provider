@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:handyman_provider_flutter/locale/applocalizations.dart';
@@ -23,6 +25,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'app_theme.dart';
+import 'networks/firebase_services/firebase_messaging_service.dart';
 import 'provider/timeSlots/timeSlotStore/time_slot_store.dart';
 
 //region Mobx Stores
@@ -37,6 +40,9 @@ Languages? languages;
 //region Firebase Services
 UserService userService = UserService();
 AuthService authService = AuthService();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+FirebaseMessagingService firebaseMessagingService = FirebaseMessagingService();
 
 ChatServices chatServices = ChatServices();
 NotificationService notificationService = NotificationService();
@@ -57,10 +63,23 @@ RemoteConfigDataModel remoteConfigDataModel = RemoteConfigDataModel();
 //region Chat Variable
 List<AddExtraChargesModel> chargesList = [];
 //endregion
+//Top Level Function
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //---For Local Notification--------//
 
+  flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.requestPermission();
   if (!isDesktop) {
     Firebase.initializeApp().then((value) {
       FlutterError.onError =
@@ -85,14 +104,9 @@ void main() async {
 
   await setLoginValues();
 
-  /*  //-----FOR ONE SIGNAL
-  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-  //TODO:To put APP id to separate file in Producation Mode
-  OneSignal.shared.setAppId("349daeb0-f597-44f6-bc01-45001cf0642a");
-  //for notification permission request
-  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-    log("--Accepted notificaiton permission: $accepted");
-  }); */
+  //Get Token
+  firebaseMessagingService.getToken();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MyApp());
 }
 
@@ -109,24 +123,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void init() async {
-    OneSignal.shared.setNotificationWillShowInForegroundHandler(
-        (OSNotificationReceivedEvent event) {
-      // Will be called whenever a notification is received in foreground
-      // Display Notification, pass null param for not displaying the notification
-      log("--------------------Notificaiton Receive: ${event.notification}------------");
-      event.complete(event.notification);
-    });
-    OneSignal.shared.setNotificationOpenedHandler(
-        (OSNotificationOpenedResult notification) {
-      try {
-        var notId = notification.notification.additionalData!.containsKey('id')
-            ? notification.notification.additionalData!['id']
-            : 0;
-        push(BookingDetailScreen(bookingId: notId.toString().toInt()));
-      } catch (e) {
-        throw errorSomethingWentWrong;
-      }
-    });
+    firebaseMessagingService.requestPermission();
     afterBuildCreated(() {
       int val = getIntAsync(THEME_MODE_INDEX);
 

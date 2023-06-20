@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:handyman_provider_flutter/main.dart';
 import 'package:handyman_provider_flutter/models/user_data.dart';
@@ -15,6 +17,7 @@ import 'base_services.dart';
 class UserService extends BaseService {
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
   FirebaseStorage _storage = FirebaseStorage.instance;
+  StreamSubscription? tokenSubscription;
 
   UserService() {
     ref = fireStore.collection(USER_COLLECTION);
@@ -151,6 +154,19 @@ class UserService extends BaseService {
       ref!.doc(value.uid.validate()).update({
         'player_id': playerId,
         'updated_at': Timestamp.now().toDate().toString(),
+      });
+      //for listen token change//
+      if (!(tokenSubscription == null)) {
+        tokenSubscription?.cancel();
+      }
+      tokenSubscription =
+          FirebaseMessaging.instance.onTokenRefresh.listen((token) async {
+        await userByEmail(email).then((value) {
+          ref!.doc(value.uid.validate()).update({
+            'player_id': token,
+            'updated_at': Timestamp.now().toDate().toString(),
+          });
+        });
       });
     }).catchError((e) {
       toast(e.toString());
