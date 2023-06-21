@@ -25,6 +25,8 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> init() async {
+    //TODO:Set UP Notification
+    firebaseMessagingService.setUpFullNotification();
     afterBuildCreated(() async {
       appStore.setLanguage(
           getStringAsync(SELECTED_LANGUAGE_CODE,
@@ -55,8 +57,8 @@ class SplashScreenState extends State<SplashScreen> {
       } else {
         //If user is already login
         firebaseMessagingService.listenToken(getStringAsync(USER_EMAIL));
-        //TODO:Set UP Notification
-        firebaseMessagingService.setUpFullNotification();
+        /* //TODO:Set UP Notification
+        firebaseMessagingService.setUpFullNotification(); */
         if (isUserTypeProvider) {
           setStatusBarColor(primaryColor);
           ProviderDashboardScreen(index: 0).launch(context,
