@@ -115,7 +115,7 @@ class ServiceData {
     name = json['name'];
     providerImage = json['provider_image'];
     categoryId = json['category_id'];
-    subCategoryId = int.tryParse(json['subcategory_id'] ?? "") ?? -1;
+    subCategoryId = int.tryParse("${json['subcategory_id']}" ?? "-1") ?? -1;
     providerId = json['provider_id'];
     price = json['price'];
     priceFormat = json['price_format'];
